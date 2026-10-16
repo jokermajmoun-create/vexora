@@ -1,0 +1,143 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEXORA | العضويات</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#080d18;color:#f4f7ff}
+header{padding:22px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #26344a}
+.logo{font-size:28px;font-weight:900;color:#54e5e3;letter-spacing:3px}
+main{max-width:1050px;margin:auto;padding:35px 5%}
+h1{font-size:clamp(30px,6vw,48px)}
+p{line-height:1.8;color:#b7c5d9}
+.hero{text-align:center;padding:25px 0 35px}
+.badge{display:inline-block;border:1px solid #34516b;border-radius:30px;padding:8px 15px;color:#54e5e3}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{padding:22px;background:#111a2a;border:1px solid #2c405a;border-radius:18px}
+.card h2{color:#54e5e3}
+.price{font-size:22px;font-weight:bold;margin:20px 0}
+button{padding:12px 18px;border:0;border-radius:10px;background:#54e5e3;color:#07121b;font-weight:bold;cursor:pointer}
+.secondary{background:#202e43;color:white}
+input{display:block;width:100%;margin:9px 0 15px;padding:13px;border-radius:9px;border:1px solid #34465e;background:#0b1220;color:white}
+#account{display:none;margin-top:25px}
+.notice{margin-top:25px;padding:15px;border:1px solid #66512b;background:#241e13;border-radius:12px;color:#ffe2a3;line-height:1.8}
+footer{text-align:center;padding:25px;color:#8e9db3;border-top:1px solid #26344a}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">VEXORA</div>
+  <button onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">ابدأ الآن</button>
+</header>
+<main>
+  <section class="hero">
+    <span class="badge">بوابة العضويات</span>
+    <h1>مرحبًا بك في <span style="color:#54e5e3">VEXORA</span></h1>
+    <p>اختر خطتك وتعرّف على مزايا العضوية وتابع طلبك التجريبي بسهولة.</p>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>VEXORA START</h2>
+      <p>الخطة الأساسية</p>
+      <div class="price">السعر يُحدد لاحقًا</div>
+      <p>• متابعة طلب العضوية<br>• معلومات الخطة<br>• دعم الأعضاء</p>
+      <button onclick="selectPlan('START')">اختيار START</button>
+    </article>
+    <article class="card" style="border-color:#54e5e3">
+      <h2>VEXORA PLUS</h2>
+      <p>الخطة الإضافية</p>
+      <div class="price">السعر يُحدد لاحقًا</div>
+      <p>• مزايا إضافية<br>• متابعة حالة الطلب<br>• دعم الأعضاء</p>
+      <button onclick="selectPlan('PLUS')">اختيار PLUS</button>
+    </article>
+    <article class="card">
+      <h2>VEXORA PRO</h2>
+      <p>الخطة المتقدمة</p>
+      <div class="price">السعر يُحدد لاحقًا</div>
+      <p>• مزايا متقدمة<br>• متابعة الطلب<br>• دعم الأعضاء</p>
+      <button onclick="selectPlan('PRO')">اختيار PRO</button>
+    </article>
+  </section>
+
+  <section id="register" class="card" style="margin-top:25px">
+    <h2>إنشاء حساب تجريبي</h2>
+    <p>استخدم بيانات تجريبية فقط. لا تدخل كلمة مرور تستخدمها في أي موقع آخر.</p>
+    <label for="name">اسم العرض</label>
+    <input id="name" placeholder="اكتب اسم العرض">
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" placeholder="name@example.com">
+    <label for="password">كلمة مرور تجريبية</label>
+    <input id="password" type="password" placeholder="6 أحرف على الأقل">
+    <p>الخطة المختارة: <strong id="plan">لم يتم الاختيار</strong></p>
+    <button onclick="register()">إنشاء حساب تجريبي</button>
+    <p id="message" role="status"></p>
+  </section>
+
+  <section id="account" class="card">
+    <h2>حسابي التجريبي</h2>
+    <p id="welcome"></p>
+    <p id="status">حالة الطلب: لم يتم إرسال طلب.</p>
+    <button onclick="requestPlan()">إرسال طلب تجريبي</button>
+    <button class="secondary" onclick="logout()">خروج</button>
+    <p id="result"></p>
+  </section>
+
+  <div class="notice">
+    نسخة تجريبية فقط: الحسابات والطلبات لا تُحفظ على خادم، ولا يوجد دفع حقيقي أو ربط بلوحة الإدارة. لا تستخدم بيانات حساسة. يلزم تطوير خادم آمن قبل استقبال أعضاء أو أموال حقيقية.
+  </div>
+</main>
+<footer>© VEXORA — نسخة تجريبية</footer>
+
+<script>
+let selectedPlan = "";
+let user = null;
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById("plan").textContent = plan;
+  document.getElementById("register").scrollIntoView({behavior:"smooth"});
+}
+
+function register() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!name || !email.includes("@") || password.length < 6) {
+    document.getElementById("message").textContent =
+      "اكتب اسمًا وبريدًا صحيحًا وكلمة مرور تجريبية من 6 أحرف على الأقل.";
+    return;
+  }
+
+  user = name;
+  document.getElementById("welcome").textContent =
+    "أهلًا بك يا " + name;
+  document.getElementById("account").style.display = "block";
+  document.getElementById("message").textContent =
+    "تم فتح حساب تجريبي داخل هذه الصفحة فقط.";
+  document.getElementById("account").scrollIntoView({behavior:"smooth"});
+}
+
+function requestPlan() {
+  if (!selectedPlan) {
+    document.getElementById("result").textContent =
+      "اختر خطة أولًا من الخطط بالأعلى.";
+    return;
+  }
+  document.getElementById("status").textContent =
+    "حالة الطلب: طلب تجريبي قيد المراجعة.";
+  document.getElementById("result").textContent =
+    "تم عرض الطلب تجريبيًا فقط. لم يتم دفع أي مبلغ.";
+}
+
+function logout() {
+  user = null;
+  document.getElementById("account").style.display = "none";
+}
+</script>
+</body>
+</html>
